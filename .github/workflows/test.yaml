@@ -31,15 +31,15 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-      - name: JDK dir
-        run: |
-          echo "------------------------"
-          cd /opt/hostedtoolcache/Java_Zulu_jdk/17.0.16-8/x64/bin
-          ls -l
-          echo "------------------------"
-          echo "ORG----${{ secrets.KEYSTORE_ORG }}"
-          echo "------------------------"
-          echo "FILE----${{ secrets.KEYSTORE_FILE }}"
+      # - name: JDK dir
+      #   run: |
+      #     echo "------------------------"
+      #     cd /opt/hostedtoolcache/Java_Zulu_jdk/17.0.16-8/x64/bin
+      #     ls -l
+      #     echo "------------------------"
+      #     echo "ORG----${{ secrets.KEYSTORE_ORG }}"
+      #     echo "------------------------"
+      #     echo "FILE----${{ secrets.KEYSTORE_FILE }}"
 
       - name: Download cache dependencies
         uses: actions/cache@v4
@@ -60,3 +60,19 @@ jobs:
         with:
           name: ${{ env.test-coverage-key }}
           path: math/coverage
+
+      - name: Key  file
+        uses: mobiledevops/secret-to-file-action@v1
+        with:
+          base64-encoded-secret: ${{ secrets.KEYSTORE_ORG }}
+          filename: "math.keystore"
+          is-executable: false
+          working-directory: "./android/app"
+      - name: create file
+        # if#: github.ref_name == env.DEV_BRANCH
+        run: yarn build:apk
+      - name: Upload apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.apk-key }}
+          path: math/android/app/build/outputs/apk/release
