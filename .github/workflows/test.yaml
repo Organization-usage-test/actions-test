@@ -32,7 +32,13 @@ jobs:
           java-version: "17"
 
       - name: JDK dir
-        run: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.16-8/x64/bin/java -version
+        run: |
+          echo "------------------------"
+          cd /opt/hostedtoolcache/Java_Zulu_jdk/17.0.16-8/x64
+          ls -l
+          echo "------------------------"
+          cd bin
+          ls -l
 
       - name: Download cache dependencies
         uses: actions/cache@v4
