@@ -48,16 +48,31 @@ jobs:
       #     gradlePath: app/build.gradle.kts
       #     versionCode: ${{ github.run_number}}
 
-      - name: Assemble release Bundle
-        run: |
-          cd android
-          ./gradlew bundleRelease
+      # - name: Assemble release Bundle
+      #   run: |
+      #     cd android
+      #     ./gradlew bundleRelease
 
-      - name: Sign release
-        uses: r0adkll/sign-android-release@v1
+      # - name: Sign release
+      #   uses: r0adkll/sign-android-release@v1
+      #   with:
+      #     releaseDirectory: android/app/build/outputs/bundle/release
+      #     signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+      #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
+      #     keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
+
+      - name: Prepare auxiliary file
+        run: echo "${{ secrets.STORE }}" | base64 --decode > android/app/release.keystore
+
+      - name: Show contents
+        run: ls -l android/app
+
+      - name: Create aab file
+        run: npx react-native build-android --mode=release
+
+      - name: Upload file
+        uses: actions/upload-artifact@v4
         with:
-          releaseDirectory: android/app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
-          keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
+          name: app-release.aab
+          path: app/build/outputs/bundle/release
