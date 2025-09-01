@@ -56,9 +56,11 @@ jobs:
           echo "----------------------------------------------" 
           ls -l -R android/app/build/outputs
           echo "----------------------------------------------"
+          ls -l android/app/build/outputs/bundle/release
+          echo "----------------------------------------------"
 
       - name: Upload file
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.aab-key}}
+          name: ${{ env.aab-key }}
           path: android/app/build/outputs/bundle/release
