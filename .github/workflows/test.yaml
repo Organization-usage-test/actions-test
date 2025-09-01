@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  apk-key: apk-${{ github.sha }}
+  aab-key: apk-${{ github.sha }}
   test-coverage-key: test-coverage-${{ github.sha }}
 
 jobs:
@@ -62,7 +62,7 @@ jobs:
       #     alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
       #     keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
 
-      - name: Prepare auxiliary file
+      - name: Prepare file
         run: echo "${{ secrets.STORE }}" | base64 --decode > android/app/release.keystore
 
       - name: Show contents
@@ -74,5 +74,5 @@ jobs:
       - name: Upload file
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.aab
+          name: ${{ env.aab-key}}
           path: android/app/build/outputs/bundle/release
