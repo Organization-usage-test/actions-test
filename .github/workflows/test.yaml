@@ -42,26 +42,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      # - name: Version Bump
-      #   uses: chkfung/android-version-actions@v1.2.3
-      #   with:
-      #     gradlePath: app/build.gradle.kts
-      #     versionCode: ${{ github.run_number}}
-
-      # - name: Assemble release Bundle
-      #   run: |
-      #     cd android
-      #     ./gradlew bundleRelease
-
-      # - name: Sign release
-      #   uses: r0adkll/sign-android-release@v1
-      #   with:
-      #     releaseDirectory: android/app/build/outputs/bundle/release
-      #     signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
-      #     keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-      #     alias: ${{ secrets.ANDROID_DEVS_ALIAS }}
-      #     keyPassword: ${{ secrets.ANDROID_DEVS_ALIAS_PASSWORD }}
-
       - name: Prepare file
         run: echo "${{ secrets.STORE }}" | base64 --decode > android/app/release.keystore
 
@@ -70,6 +50,12 @@ jobs:
 
       - name: Create aab file
         run: npx react-native build-android --mode=release
+
+      - name: Show contents 2
+        run: |
+          echo "----------------------------------------------" 
+          ls -l -R android/app/build/outputs
+          echo "----------------------------------------------"
 
       - name: Upload file
         uses: actions/upload-artifact@v4
